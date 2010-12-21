@@ -1,7 +1,7 @@
 # -*- coding: UTF-8 -*-
 
 from google.appengine.api import xmpp
-from gateway.server_protocol import save_or_update_pattern
+from gateway.server_protocol import save_or_update_pattern, get_patterns
 from django.views.decorators.csrf import csrf_exempt
 import logging
 from django.utils import simplejson
@@ -15,14 +15,9 @@ def on_message(request):
 
     action = data['action']
 
-    if action == 'save_pattern':
-        result = save_or_update_pattern(data)
-
-    elif action =='get_patterns':
-        result = get_patterns(data)
-        simplejson.dump(result)
-
+    if action == 'extract_patterns':
+        result = extract_patterns(data)
     else:
         result = "could not understand your request"
 
-    message.reply(result)
+    message.reply(simplejson.dump(result))

@@ -1,34 +1,46 @@
 import logging
 from gateway.models import ExtractedPattern
 
-def save_or_update_pattern(data):
-    if(data.has_key('name')):
-        name = data['name']
+def extract_patterns(data):
 
-    if(data.has_key('subject')):
-        subject = data['subject']
+    stories = []
 
-    if(data.has_key('relation')):
-        relation = data['relation']
+    for pattern in data['patterns']:
+        if(pattern.has_key('name')):
+            name = data['name']
+            stories.append(name)
 
-    if(data.has_key('object')):
-        object = data['object']
+        if(pattern.has_key('subject')):
+            subject = data['subject']
+            stories.append(subject)
 
-    logging.info("Received pattern: name: %s subject: %s relation: %s object: %s " % (name,subject,relation,object))
+        if(pattern.has_key('relation')):
+            relation = data['relation']
+            stories.append(relation)
 
-    query = ExtractedPattern.objects.filter(subject=subject, relation = relation, object=object)
+        if(pattern.has_key('object')):
+            object = data['object']
+            stories.append(object)
 
-    if query.count() == 0:
-        p = ExtractedPattern(subject=subject, relation = relation, object=object)
+        logging.info("Received pattern: name: %s subject: %s relation: %s object: %s " % (name,subject,relation,object))
+
+        query = ExtractedPattern.objects.filter(subject=subject, relation=relation, object=object)
+
+        if query.count() == 0:
+            p = ExtractedPattern(subject=subject, relation=relation, object=object)
+            p.save()
+            p.name = "pattern_%s" % p.id
+        else:
+            p = query[0]
+            p.count +=p.count
+
         p.save()
-        p.name = "pattern_%s" % p.id
-    else:
-        p = query[0]
-        p.count +=p.count
 
-    p.save()
+    result = []
+    for story in set(stories):
+        result.extend(get_patterns(story))
 
-    return "pattern saved successfully"
+    return result
 
 def get_patterns(data):
     subject = data['subject']
