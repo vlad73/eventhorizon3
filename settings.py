@@ -8,6 +8,15 @@ except ImportError:
 
 import os
 
+# setup default datastore paths
+_ds_pathinfo = {
+    'datastore_path': '../data/eventhorizon',
+    'history_path': '../data/eventhorizon.history',
+}
+
+DATABASES['default'].update(_ds_pathinfo)
+
+
 SECRET_KEY = '=r-$b*8hglm+858&9t043hlm6-&6-3d3vfc4((7yd0dbrakhvi'
 
 INSTALLED_APPS = (
@@ -15,6 +24,7 @@ INSTALLED_APPS = (
 #    'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
+    'gateway',
 )
 
 if has_djangoappengine:
