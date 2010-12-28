@@ -39,7 +39,6 @@ def extract_patterns(data):
     return result
 
 def get_patterns(story):
-    logging.info("sssssssssssssssssssssssssssssssssssssssss")
     subjects = list(ExtractedPattern.objects.filter(subject=story,count__gte=2).values())  #TODO fix bug
     objects = list(ExtractedPattern.objects.filter(object=story,count__gte=2).values())
     subjects.extend(objects)
